@@ -9,19 +9,23 @@ enum class TextureID : char {
 
 class TextureManager final
 {
-	std::unordered_map<char, sf::Texture> textures;
 
 public:
-	const sf::Texture& getTexture(TextureID id);
+	const sf::Texture& getTexture(TextureID id) const;
 	static TextureManager& getSingleton();
 
 	~TextureManager() = default;
 private:
 	//deleted functions
-	TextureManager();
 	TextureManager(const TextureManager& copy) = delete;
 	TextureManager(TextureManager&& move) = delete;
 	TextureManager& operator=(const TextureManager& copy) = delete;
 	TextureManager& operator=(TextureManager&& move) = delete;
+
+private: //methods
+	TextureManager();
 	void load_texture(std::string path, TextureID assignId);
+
+private: //fields
+	std::unordered_map<char, sf::Texture> textures;
 };

@@ -1,11 +1,15 @@
+#include<chrono>
 #include "GameManager.h"
 #include "TextureManager.h"
-#include<chrono>
 
 
 GameManager::GameManager(int width, int height)
 	: window(sf::VideoMode(width, height), "Tribbles!")
 {
+	//really fast frames will such a small time between two ticks, that the delta time will be zero (after casting).
+	//this cause zero multiplication propagations and cause a a jittery movement effect.
+	window.setFramerateLimit(60);
+
 	auto& textures = TextureManager::getSingleton();
 
 	testSprite.setTexture(textures.getTexture(TextureID::TRIBBLE));
@@ -44,8 +48,7 @@ void GameManager::tick()
 
 	//set up delta time
 	auto now = std::chrono::steady_clock::now();
-	nanoseconds delta_ns = now - last_frame;
-	milliseconds delta_milis = duration_cast<milliseconds>(delta_ns);
+	milliseconds delta_milis = duration_cast<milliseconds>(now - last_frame);
 	float delta_ms = static_cast<float>(delta_milis.count());
 
 	//Let's set up delta_time to be a fraction of a second. This may not be standard practice (it might be), but it allows us to
@@ -67,7 +70,7 @@ void GameManager::io(float delta_time)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
 	{
-		static float debug_move_speed = 1200.f; //device units(pixels) per second; should clear screen in 1 second regardless of framerate
+		static const float debug_move_speed = 1200.f; //device units(pixels) per second; should clear screen in 1 second regardless of framerate
 		auto pos = testSprite.getPosition();
 		testSprite.setPosition(pos.x + debug_move_speed * delta_time, pos.y);
 	}
