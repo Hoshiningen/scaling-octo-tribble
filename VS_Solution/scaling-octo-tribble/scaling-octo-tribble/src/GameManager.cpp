@@ -1,6 +1,7 @@
 #include<chrono>
 #include "GameManager.h"
 #include "TextureManager.h"
+#include<algorithm>
 
 
 GameManager::GameManager(int width, int height)
@@ -12,8 +13,7 @@ GameManager::GameManager(int width, int height)
 
 	auto& textures = TextureManager::getSingleton();
 
-	testSprite.setTexture(textures.getTexture(TextureID::TRIBBLE));
-	testSprite.setPosition(50, 50);
+	addTrible();
 }
 
 void GameManager::gameLoop()
@@ -23,15 +23,16 @@ void GameManager::gameLoop()
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
-			if (event.type == sf::Event::Closed)
-				window.close();
+			if (event.type == sf::Event::Closed || shutdown)
+				window.close();			
 		}
 
 		tick();
-
 		window.clear();
-
-		window.draw(testSprite);
+		for (sf::Sprite& trible : tribles)
+		{
+			window.draw(trible);
+		}
 
 		//buffer swap
 		window.display();
@@ -61,6 +62,7 @@ void GameManager::tick()
 	io(delta_time);
 	
 	//process all ticks
+	tickAll(delta_time);
 
 	//update last frame after processing of tick.
 	last_frame = now;
@@ -70,8 +72,33 @@ void GameManager::io(float delta_time)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
 	{
-		static const float debug_move_speed = 1200.f; //device units(pixels) per second; should clear screen in 1 second regardless of framerate
-		auto pos = testSprite.getPosition();
-		testSprite.setPosition(pos.x + debug_move_speed * delta_time, pos.y);
+		//static const float debug_move_speed = 1200.f; //device units(pixels) per second; should clear screen in 1 second regardless of framerate
+		//auto pos = testSprite.getPosition();
+		//testSprite.setPosition(pos.x + debug_move_speed * delta_time, pos.y);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+	{
+		shutdown = true;
+	}
+}
+
+void GameManager::addTrible()
+{
+	static const float scaleFactor = 0.66f;
+
+	tribles.emplace_back();
+	sf::Sprite& newSprite = tribles.back();
+
+	newSprite.setTexture(TextureManager::getSingleton().getTexture(TextureID::TRIBBLE));
+	newSprite.setPosition(50, 50);
+	newSprite.setScale(scaleFactor / 2, scaleFactor);
+}
+
+void GameManager::tickAll(float deltaTime)
+{
+	for (auto& trible : tribles)
+	{
+		trible.tick(deltaTime);
 	}
 }

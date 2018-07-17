@@ -3,7 +3,7 @@
 
 int main()
 {
-	GameManager manager{ 1200, 800 };
+	GameManager manager( 1200, 800 );
 
 	manager.gameLoop();
 	return 0;
