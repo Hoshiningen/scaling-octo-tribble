@@ -5,13 +5,20 @@
 
 #include <SFML/Graphics.hpp>
 
+#include"Tribble.h"
+
 class GameManager final 
 {
 private:
 	sf::RenderWindow window;
-	sf::Sprite testSprite;
+	//sf::Sprite testSprite;
+
+	//std::unordered_map<sf::Sprite*, sf::Sprite> tribles;
+	std::vector<Tribble> tribles;
 
 	void tick();
+	void tickAll(float deltaTime);
+
 	void io(float delta_time);
 
 public:
@@ -28,5 +35,9 @@ public:
 public:
 	//api
 	void gameLoop();
+	void addTrible();
+
+private:
+	bool shutdown = false;
 };
 
