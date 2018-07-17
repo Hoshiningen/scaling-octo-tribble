@@ -1,11 +1,14 @@
-#include<chrono>
 #include "GameManager.h"
 #include "TextureManager.h"
-#include<algorithm>
+#include "TribbleBuilder.h"
 
+#include <algorithm>
+#include <chrono>
+#include <memory>
 
 GameManager::GameManager(int width, int height)
-	: window(sf::VideoMode(width, height), "Tribbles!")
+    : window(sf::VideoMode(width, height), "Tribbles!"),
+      player(std::make_unique<Player>(sf::Vector2f(width / 2.f, height / 2.f)))
 {
 	//really fast frames will such a small time between two ticks, that the delta time will be zero (after casting).
 	//this cause zero multiplication propagations and cause a a jittery movement effect.
@@ -13,7 +16,14 @@ GameManager::GameManager(int width, int height)
 
 	auto& textures = TextureManager::getSingleton();
 
-	addTrible();
+    player->setTexture(textures.getTexture(TextureID::PLAYER));
+    player->setColor(sf::Color::Cyan);
+
+    sf::FloatRect globalBounds = player->getGlobalBounds();  
+    player->setOrigin(globalBounds.width / 2.f, globalBounds.height / 2.f);
+    player->setPosition(width / 2.f, height * .9f);
+
+    addTribble();
 }
 
 void GameManager::gameLoop()
@@ -29,10 +39,14 @@ void GameManager::gameLoop()
 
 		tick();
 		window.clear();
-		for (sf::Sprite& trible : tribles)
-		{
-			window.draw(trible);
-		}
+
+        std::for_each(std::begin(tribbles), std::end(tribbles),
+            [win = &window](auto& triblePair) 
+            { 
+                win->draw(triblePair.second);
+            });
+
+        window.draw(*player);
 
 		//buffer swap
 		window.display();
@@ -50,7 +64,7 @@ void GameManager::tick()
 	//set up delta time
 	auto now = std::chrono::steady_clock::now();
 	milliseconds delta_milis = duration_cast<milliseconds>(now - last_frame);
-	float delta_ms = static_cast<float>(delta_milis.count());
+	auto delta_ms = static_cast<float>(delta_milis.count());
 
 	//Let's set up delta_time to be a fraction of a second. This may not be standard practice (it might be), but it allows us to
 	//use speeds variables like "move 1200 pixels a second" which kind of gives us a mental idea of what the values we're using
@@ -83,22 +97,40 @@ void GameManager::io(float delta_time)
 	}
 }
 
-void GameManager::addTrible()
+void GameManager::addTribble()
 {
 	static const float scaleFactor = 0.66f;
 
-	tribles.emplace_back();
-	sf::Sprite& newSprite = tribles.back();
+    TribbleBuilder tribbleBuilder;
+    auto newSprite = tribbleBuilder.setPosition({ 50, 50 })
+        .setScale({ scaleFactor / 2, scaleFactor })
+        .setTexture(TextureManager::getSingleton().getTexture(TextureID::TRIBBLE))
+        .create();
 
-	newSprite.setTexture(TextureManager::getSingleton().getTexture(TextureID::TRIBBLE));
-	newSprite.setPosition(50, 50);
-	newSprite.setScale(scaleFactor / 2, scaleFactor);
+    tribbles.emplace(std::move(newSprite), *newSprite);
+}
+
+void GameManager::addTribble(float x, float y)
+{
+    static const float scaleFactor = 0.66f;
+
+    TribbleBuilder tribbleBuilder;
+    auto newSprite = tribbleBuilder.setPosition({ x, y })
+        .setTexture(TextureManager::getSingleton().getTexture(TextureID::TRIBBLE))
+        .setScale({ scaleFactor / 2, scaleFactor })
+        .setVelocity({25, 100})
+        .create();
+
+    tribbles.emplace(std::move(newSprite), *newSprite);
 }
 
 void GameManager::tickAll(float deltaTime)
 {
-	for (auto& trible : tribles)
-	{
-		trible.tick(deltaTime);
-	}
+    std::for_each(std::begin(tribbles), std::end(tribbles),
+        [delta = deltaTime](auto& triblePair)
+        { 
+            triblePair.second.tick(delta);
+        });
+
+    player->tick(deltaTime);
 }

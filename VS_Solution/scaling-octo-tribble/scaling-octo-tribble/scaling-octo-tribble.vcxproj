@@ -125,13 +125,17 @@
   <ItemGroup>
     <ClCompile Include="src\GameManager.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\Tribble.cpp" />
+    <ClCompile Include="src\TribbleBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GameManager.h" />
+    <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\TextureManager.h" />
     <ClInclude Include="src\Tribble.h" />
+    <ClInclude Include="src\TribbleBuilder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -6,6 +6,7 @@ TextureManager::TextureManager()
 {
 	//Load textures up front when the game is booted. Have sprites refer to textures using the TextureID enum.
 	load_texture("art/tribble.png", TextureID::TRIBBLE);
+    load_texture("art/tribble.png", TextureID::PLAYER);
 }
 
 void TextureManager::load_texture(std::string path, TextureID assignId)
