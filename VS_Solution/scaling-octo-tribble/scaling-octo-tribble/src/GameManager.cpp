@@ -6,9 +6,14 @@
 #include <chrono>
 #include <memory>
 
-GameManager::GameManager(int width, int height)
-    : window(sf::VideoMode(width, height), "Tribbles!"),
-      player(std::make_unique<Player>(sf::Vector2f(width / 2.f, height / 2.f)))
+namespace {
+    static const int INIT_WIDTH = 1200;
+    static const int INIT_HEIGHT = 800;
+}
+
+GameManager::GameManager()
+    : window(sf::VideoMode(INIT_WIDTH, INIT_HEIGHT), "Tribbles!"),
+      player(std::make_unique<Player>(sf::Vector2f(INIT_WIDTH / 2.f, INIT_HEIGHT / 2.f)))
 {
 	//really fast frames will such a small time between two ticks, that the delta time will be zero (after casting).
 	//this cause zero multiplication propagations and cause a a jittery movement effect.
@@ -21,9 +26,15 @@ GameManager::GameManager(int width, int height)
 
     sf::FloatRect globalBounds = player->getGlobalBounds();  
     player->setOrigin(globalBounds.width / 2.f, globalBounds.height / 2.f);
-    player->setPosition(width / 2.f, height * .9f);
+    player->setPosition(INIT_WIDTH / 2.f, INIT_HEIGHT * .9f);
 
     addTribble();
+}
+
+GameManager& GameManager::getSingleton()
+{
+    static GameManager instance{};
+    return instance;
 }
 
 void GameManager::gameLoop()
@@ -122,6 +133,16 @@ void GameManager::addTribble(float x, float y)
         .create();
 
     tribbles.emplace(std::move(newSprite), *newSprite);
+}
+
+const int GameManager::getWidth() const noexcept
+{
+    return window.getSize().x;
+}
+
+const int GameManager::getHeight() const noexcept
+{
+    return window.getSize().y;
 }
 
 void GameManager::tickAll(float deltaTime)

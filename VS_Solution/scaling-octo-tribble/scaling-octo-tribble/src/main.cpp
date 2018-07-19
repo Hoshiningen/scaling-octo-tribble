@@ -1,10 +1,9 @@
 #include "GameManager.h"
 
-
 int main()
 {
-	GameManager manager( 1200, 800 );
-
+    GameManager& manager = GameManager::getSingleton();
 	manager.gameLoop();
+
 	return 0;
 }

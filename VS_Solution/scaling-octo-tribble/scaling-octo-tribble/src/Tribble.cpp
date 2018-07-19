@@ -11,7 +11,7 @@ Tribble::~Tribble()
 {
 }
 
-void Tribble::tick(float deltaTime)
+void Tribble::tick(const float deltaTime)
 {
 	//get position
 	sf::Vector2f position = getPosition();

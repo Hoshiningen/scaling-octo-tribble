@@ -10,7 +10,7 @@ public:
 
 	virtual ~Tribble();
 
-	void tick(float deltaTime);
+	void tick(const float deltaTime);
     void setVelocity(const sf::Vector2f& velocity);
 
 private:

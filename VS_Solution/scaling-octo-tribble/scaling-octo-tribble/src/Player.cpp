@@ -1,11 +1,12 @@
 #include "Player.h"
+#include "GameManager.h"
 
 Player::Player(sf::Vector2f o)
     : origin(o) {}
 
-void Player::tick(float deltaTime)
+void Player::tick(const float deltaTime)
 {
-    const float distanceThreshold = 600;
+    const float distanceThreshold = GameManager::getSingleton().getWidth() / 2;
     const float leftBoundary = -distanceThreshold + getOrigin().x;
     const float rightBoundary = distanceThreshold - getOrigin().x;
     sf::Vector2f distanceVector = getPosition() - origin;

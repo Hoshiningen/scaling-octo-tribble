@@ -1,5 +1,9 @@
 #pragma once
+
+#include "Projectile.h"
+
 #include<SFML/Graphics.hpp>
+#include <vector>
 
 class Player : public sf::Sprite
 {
@@ -15,9 +19,10 @@ public:
 
     virtual ~Player() = default;
 
-    void tick(float deltaTime);
+    void tick(const float deltaTime);
 
 private:
     float speed{1000};
     sf::Vector2f origin{};
+    std::vector<Projectile> projectiles;
 };

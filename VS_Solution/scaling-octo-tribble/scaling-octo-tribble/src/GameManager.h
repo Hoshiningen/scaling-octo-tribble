@@ -1,4 +1,5 @@
 #pragma once
+
 #include <memory>
 #include <map>
 
@@ -10,14 +11,8 @@
 class GameManager final 
 {
 public:
-	GameManager(int width, int height);
+    static GameManager& getSingleton();
 	~GameManager() = default;
-
-	//deleted functions
-	GameManager(const GameManager& copy) = delete;
-	GameManager(GameManager&& move) = delete;
-	GameManager& operator=(const GameManager& copy) = delete;
-	GameManager& operator=(GameManager&& move) = delete;
 
 	//api
 	void gameLoop();
@@ -25,18 +20,53 @@ public:
 
     void addTribble(float x, float y);
 
+    const int getWidth() const noexcept;
+    const int getHeight() const noexcept;
+
+    bool handleCollision(sf::Sprite* tribble, sf::Sprite* projectile) const;
+
+    /*
+        Shoot the projectile
+
+        The tribble needs to be aware that it was shot, and it needs
+            to be able to die
+
+        Collision can be done through sfml
+
+        THe player registers "Active" projectiles with the game manager
+        and collision could occur through it
+
+        for (auto projectile : Projectile::ACtiveProjectiles())
+        {
+            for (auto tribble : tribbles)
+            {
+                if (projectile.collide(tribble))
+                {
+                    //  Hurray we have a collision
+                }
+            }
+        }
+    */
+
 private:
     void tick();
     void tickAll(float deltaTime);
-
     void io(float delta_time);
+
+    GameManager();
+
+    //deleted functions
+    GameManager(const GameManager& copy) = delete;
+    GameManager(GameManager&& move) = delete;
+    GameManager& operator=(const GameManager& copy) = delete;
+    GameManager& operator=(GameManager&& move) = delete;
 
 private:
     using TribbleMap = std::map<std::unique_ptr<Tribble>, Tribble&>;
 
     bool shutdown{ false };
     sf::RenderWindow window;
-    TribbleMap tribbles;
+    TribbleMap tribbles{};
 
     std::unique_ptr<Player> player;
 };
