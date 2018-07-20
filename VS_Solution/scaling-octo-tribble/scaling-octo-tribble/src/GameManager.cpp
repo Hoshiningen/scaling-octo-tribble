@@ -49,18 +49,8 @@ void GameManager::gameLoop()
 		}
 
 		tick();
-		window.clear();
+		draw(window);
 
-        std::for_each(std::begin(tribbles), std::end(tribbles),
-            [win = &window](auto& triblePair) 
-            { 
-                win->draw(triblePair.second);
-            });
-
-        window.draw(*player);
-
-		//buffer swap
-		window.display();
 	}
 }
 
@@ -154,4 +144,32 @@ void GameManager::tickAll(float deltaTime)
         });
 
     player->tick(deltaTime);
+}
+
+void GameManager::draw(sf::RenderWindow& window)
+{
+	window.clear();
+
+	std::for_each(std::begin(tribbles), std::end(tribbles),
+		[win = &window](auto& triblePair)
+	{
+		win->draw(triblePair.second);
+	});
+
+	window.draw(*player);
+
+	//draw active projectiles
+	
+	const auto& ProjectilesToDraw = Projectile::GetActiveProjectiles();
+	for (Projectile* projectile : ProjectilesToDraw)
+	{
+		if (projectile)
+		{
+			window.draw(*projectile);
+		}
+	}
+
+	
+	//buffer swap
+	window.display();
 }

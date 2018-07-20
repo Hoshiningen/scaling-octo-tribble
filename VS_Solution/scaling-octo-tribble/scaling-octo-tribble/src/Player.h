@@ -7,6 +7,7 @@
 
 class Player : public sf::Sprite
 {
+
 public:
     explicit Player(sf::Vector2f origin);
 
@@ -24,5 +25,8 @@ public:
 private:
     float speed{1000};
     sf::Vector2f origin{};
+
+	void initializeProjectiles();
     std::vector<Projectile> projectiles;
+	size_t nextProjectile = 0;
 };

@@ -9,6 +9,7 @@ Tribble::Tribble() :
 
 Tribble::~Tribble()
 {
+
 }
 
 void Tribble::tick(const float deltaTime)
@@ -21,6 +22,7 @@ void Tribble::tick(const float deltaTime)
 
 	//update sprite's position based on how velocity moved it
 	setPosition(position);
+
 }
 
 void Tribble::setVelocity(const sf::Vector2f& v)

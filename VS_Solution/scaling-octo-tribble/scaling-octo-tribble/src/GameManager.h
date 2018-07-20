@@ -16,6 +16,9 @@ public:
 
 	//api
 	void gameLoop();
+
+	void draw(sf::RenderWindow& window);
+
 	void addTribble();
 
     void addTribble(float x, float y);
