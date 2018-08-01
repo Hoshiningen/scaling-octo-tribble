@@ -4,6 +4,8 @@
 
 #include<SFML/Graphics.hpp>
 #include <vector>
+#include <stack>
+#include <memory>
 
 class Player : public sf::Sprite
 {
@@ -27,6 +29,6 @@ private:
     sf::Vector2f origin{};
 
 	void initializeProjectiles();
-    std::vector<Projectile> projectiles;
-	size_t nextProjectile = 0;
+	
+	std::stack<std::shared_ptr<Projectile> > quiver;
 };

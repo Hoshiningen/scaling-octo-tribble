@@ -28,6 +28,11 @@ public:
 
     bool handleCollision(sf::Sprite* tribble, sf::Sprite* projectile) const;
 
+	sf::Vector2i getMousePosition()
+	{
+		return sf::Mouse::getPosition(window);
+	}
+
     /*
         Shoot the projectile
 
@@ -39,9 +44,9 @@ public:
         THe player registers "Active" projectiles with the game manager
         and collision could occur through it
 
-        for (auto projectile : Projectile::ACtiveProjectiles())
+        for (auto& projectile : Projectile::ACtiveProjectiles())
         {
-            for (auto tribble : tribbles)
+            for (auto& tribble : tribbles)
             {
                 if (projectile.collide(tribble))
                 {

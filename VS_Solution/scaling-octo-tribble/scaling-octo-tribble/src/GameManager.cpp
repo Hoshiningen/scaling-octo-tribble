@@ -144,6 +144,12 @@ void GameManager::tickAll(float deltaTime)
         });
 
     player->tick(deltaTime);
+
+
+	for (auto ptr : Projectile::GetActiveProjectiles())
+	{
+		ptr->tick(deltaTime);
+	}
 }
 
 void GameManager::draw(sf::RenderWindow& window)
@@ -161,7 +167,7 @@ void GameManager::draw(sf::RenderWindow& window)
 	//draw active projectiles
 	
 	const auto& ProjectilesToDraw = Projectile::GetActiveProjectiles();
-	for (Projectile* projectile : ProjectilesToDraw)
+	for (auto& projectile : ProjectilesToDraw)
 	{
 		if (projectile)
 		{

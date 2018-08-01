@@ -4,7 +4,7 @@
 
 namespace
 {
-	const size_t NUM_PROJECTILES = 20;
+	const size_t NUM_PROJECTILES = 2;
 }
 
 Player::Player(sf::Vector2f o)
@@ -31,6 +31,27 @@ void Player::tick(const float deltaTime)
         if (distanceVector.x < rightBoundary)
             move({ deltaTime * speed, 0 });
     }
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+	{
+		if (quiver.size() != 0)
+		{
+			auto projectile = quiver.top();
+			sf::Vector2f currentPos = getPosition();
+
+			projectile->setPosition(currentPos);
+			sf::Vector2i mousePosition = GameManager::getSingleton().getMousePosition();
+			sf::Vector2f mousePosFloat = { static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y) };
+
+			sf::Vector2f newVelocity = mousePosFloat - currentPos;
+
+			//TODO normalize vector and multiple by speed
+
+			projectile->setVelocity(newVelocity);
+			projectile->activate(quiver);
+			quiver.pop();
+		}
+	}
 }
 
 void Player::initializeProjectiles()
@@ -40,13 +61,16 @@ void Player::initializeProjectiles()
 
 	for (int i = 0; i < NUM_PROJECTILES; ++i)
 	{
-		projectiles.emplace_back();
-		projectiles[i].setTexture(projectileTexture);
-		projectiles[i].setScale({0.125, 0.25f});
+		//projectiles.emplace_back();
+		auto projectile = std::make_shared<Projectile>();
+
+		projectile->setTexture(projectileTexture);
+		projectile->setScale({0.125, 0.25f});
 
 		//delete below, for testing
-		projectiles[i].setPosition(400, 400);
+		projectile->setPosition(400, 400);
+
+		quiver.emplace(projectile);
 	}
 
-	projectiles[0].activate();
 }
