@@ -24,11 +24,13 @@ public:
 
     void tick(const float deltaTime);
 
+
 private:
     float speed{1000};
     sf::Vector2f origin{};
 
 	void initializeProjectiles();
+	void fireProjectile();
 	
 	std::stack<std::shared_ptr<Projectile> > quiver;
 };

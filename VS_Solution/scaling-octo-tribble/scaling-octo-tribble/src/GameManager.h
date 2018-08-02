@@ -28,10 +28,8 @@ public:
 
     bool handleCollision(sf::Sprite* tribble, sf::Sprite* projectile) const;
 
-	sf::Vector2i getMousePosition()
-	{
-		return sf::Mouse::getPosition(window);
-	}
+	sf::Vector2i getMousePosition();
+	const sf::RenderWindow& getWindow() const;
 
     /*
         Shoot the projectile
@@ -68,7 +66,7 @@ private:
     GameManager(GameManager&& move) = delete;
     GameManager& operator=(const GameManager& copy) = delete;
     GameManager& operator=(GameManager&& move) = delete;
-
+	
 private:
     using TribbleMap = std::map<std::unique_ptr<Tribble>, Tribble&>;
 

@@ -145,11 +145,12 @@ void GameManager::tickAll(float deltaTime)
 
     player->tick(deltaTime);
 
-
-	for (auto ptr : Projectile::GetActiveProjectiles())
+	for (auto& ptr : Projectile::GetActiveProjectiles())
 	{
 		ptr->tick(deltaTime);
 	}
+
+	//Projectile::handleStagedForRemove();
 }
 
 void GameManager::draw(sf::RenderWindow& window)
@@ -178,4 +179,14 @@ void GameManager::draw(sf::RenderWindow& window)
 	
 	//buffer swap
 	window.display();
+}
+
+const sf::RenderWindow& GameManager::getWindow() const
+{
+	return window;
+}
+
+sf::Vector2i GameManager::getMousePosition()
+{
+	return sf::Mouse::getPosition(window);
 }

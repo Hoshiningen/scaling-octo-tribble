@@ -2,13 +2,14 @@
 #include <iostream>
 #include <stack>
 #include <memory>
+#include "GameManager.h"
 
 std::set<std::shared_ptr<Projectile> > Projectile::activeProjectiles;
-//std::map<Projectile*, Projectile*> Projectile::activeProjectiles;
 
-void Projectile::setVelocity(const sf::Vector2f& v) noexcept
+void Projectile::setDirection(const sf::Vector2f&normalizedDirection) noexcept
 {
-    velocity = v;
+    velocity = normalizedDirection;
+	velocity *= speed;
 }
 
 void Projectile::tick(const float deltaTime)
@@ -16,26 +17,44 @@ void Projectile::tick(const float deltaTime)
     //get position
     sf::Vector2f position = getPosition();
 
-    //change it by velocity
+    //change position by velocity
     position += { deltaTime * velocity.x, deltaTime * velocity.y};
 
     //update sprite's position based on how velocity moved it
     setPosition(position);
 
-	//TODO de-register from active projectiles
-	//containerForDeactivation...addback
+	GameManager& singleton = GameManager::getSingleton();
+	const sf::RenderWindow& window = singleton.getWindow();
+	sf::FloatRect viewport(window.getViewport(window.getView()));
+	
+	if (!viewport.intersects(this->getGlobalBounds()))
+	{
+		if (deactivationContainer)
+		{
+			deactivationContainer->push(shared_from_this());
+		}
+		deactivationContainer = nullptr;
+		activeProjectiles.erase(shared_from_this());
+	}
 }
 
 void Projectile::activate(std::stack<std::shared_ptr<Projectile> >& containerForDeactivation) //TODO make sure safe since player may be deleted before this
 {
 	bIsActive = true;
-	std::cout << activeProjectiles.size() << std::endl;
 	
 	Projectile::activeProjectiles.insert(shared_from_this());
+
+	this->deactivationContainer = &containerForDeactivation;
 }
 
-const std::set<std::shared_ptr<Projectile> >& Projectile::GetActiveProjectiles()
+const std::set<std::shared_ptr<Projectile> > Projectile::GetActiveProjectiles()
 {
+	//this intentionally makes a copy to prevent removal while iterating.
 	return activeProjectiles;
+}
+
+void Projectile::setSpeed(float newSpeed)
+{
+	speed = newSpeed;
 }
 

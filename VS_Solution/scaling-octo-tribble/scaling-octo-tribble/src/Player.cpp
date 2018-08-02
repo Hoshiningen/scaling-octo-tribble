@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "GameManager.h"
 #include "TextureManager.h"
+#include <numeric>
 
 namespace
 {
@@ -34,23 +35,30 @@ void Player::tick(const float deltaTime)
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 	{
-		if (quiver.size() != 0)
-		{
-			auto projectile = quiver.top();
-			sf::Vector2f currentPos = getPosition();
+		fireProjectile();
 
-			projectile->setPosition(currentPos);
-			sf::Vector2i mousePosition = GameManager::getSingleton().getMousePosition();
-			sf::Vector2f mousePosFloat = { static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y) };
+	}
+}
 
-			sf::Vector2f newVelocity = mousePosFloat - currentPos;
+void Player::fireProjectile()
+{
+	if (quiver.size() != 0)
+	{
+		auto projectile = quiver.top();
+		sf::Vector2f currentPos = getPosition();
 
-			//TODO normalize vector and multiple by speed
+		projectile->setPosition(currentPos);
+		sf::Vector2i mousePosition = GameManager::getSingleton().getMousePosition();
+		sf::Vector2f mousePosFloat = { static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y) };
+		sf::Vector2f newDirection = mousePosFloat - currentPos;
 
-			projectile->setVelocity(newVelocity);
-			projectile->activate(quiver);
-			quiver.pop();
-		}
+		// Normalize vector and multiple by speed
+		float magnitude = std::sqrt(newDirection.x * newDirection.x + newDirection.y * newDirection.y);
+		newDirection /= magnitude; 
+
+		projectile->setDirection(newDirection);
+		projectile->activate(quiver);
+		quiver.pop();
 	}
 }
 
@@ -69,6 +77,8 @@ void Player::initializeProjectiles()
 
 		//delete below, for testing
 		projectile->setPosition(400, 400);
+
+		projectile->setSpeed(400.0f);
 
 		quiver.emplace(projectile);
 	}
