@@ -1,6 +1,12 @@
 #pragma once
+
 #include <unordered_map>
+
 #include "SFML\Graphics\Texture.hpp"
+
+#include "GameConstants.h"
+
+BEGIN_GAME_NAMESPACE
 
 enum class TextureID : char
 {
@@ -17,18 +23,19 @@ public:
 
 	~TextureManager() = default;
 
-private:
-
-	//deleted functions
 	TextureManager(const TextureManager& copy) = delete;
 	TextureManager(TextureManager&& move) = delete;
 	TextureManager& operator=(const TextureManager& copy) = delete;
 	TextureManager& operator=(TextureManager&& move) = delete;
 
-    //methods
-	TextureManager();
-	void load_texture(std::string path, TextureID assignId);
+private:
 
-private: //fields
+	TextureManager();
+
+	void loadTexture(std::string path, TextureID assignId);
+
+private:
     std::unordered_map<char, sf::Texture> textures{};
 };
+
+END_GAME_NAMESPACE

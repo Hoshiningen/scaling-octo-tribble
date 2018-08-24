@@ -2,15 +2,15 @@
 #include <iostream>
 #include "TextureManager.h"
 
-TextureManager::TextureManager()
+sot::TextureManager::TextureManager()
 {
 	//Load textures up front when the game is booted. Have sprites refer to textures using the TextureID enum.
-	load_texture("art/tribble.png", TextureID::TRIBBLE);
-    load_texture("art/tribble.png", TextureID::PLAYER);
-    load_texture("art/tribble.png", TextureID::PROJECTILE);
+	loadTexture("art/tribble.png", TextureID::TRIBBLE);
+    loadTexture("art/tribble.png", TextureID::PLAYER);
+    loadTexture("art/tribble.png", TextureID::PROJECTILE);
 }
 
-void TextureManager::load_texture(std::string path, TextureID assignId)
+void sot::TextureManager::loadTexture(std::string path, sot::TextureID assignId)
 {
 	if (textures.find(static_cast<char>(assignId)) != textures.end())
 	{
@@ -25,7 +25,7 @@ void TextureManager::load_texture(std::string path, TextureID assignId)
 	}
 }
 
-const sf::Texture& TextureManager::getTexture(TextureID id) const
+const sf::Texture& sot::TextureManager::getTexture(TextureID id) const
 {
 	auto itr = textures.find(static_cast<char>(id));
 	if (itr != textures.end())
@@ -37,7 +37,7 @@ const sf::Texture& TextureManager::getTexture(TextureID id) const
 	throw std::runtime_error("fatal error - texture not loaded for id: " + static_cast<int>(id));
 }
 
-TextureManager& TextureManager::getSingleton()
+sot::TextureManager& sot::TextureManager::getSingleton()
 {
 	static TextureManager singleton;
 	return singleton;

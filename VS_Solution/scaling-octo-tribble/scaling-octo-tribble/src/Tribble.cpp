@@ -1,18 +1,14 @@
 #include "Tribble.h"
+
 #include "SFML\System\Vector2.hpp"
 
-Tribble::Tribble() :
-	velocity(0.f, 400.0f)
-{
+sot::Tribble::Tribble() 
+    : velocity(0.f, 400.0f)
+{}
 
-}
+sot::Tribble::~Tribble() = default;
 
-Tribble::~Tribble()
-{
-
-}
-
-void Tribble::tick(const float deltaTime)
+void sot::Tribble::tick(const float deltaTime)
 {
 	//get position
 	sf::Vector2f position = getPosition();
@@ -22,10 +18,9 @@ void Tribble::tick(const float deltaTime)
 
 	//update sprite's position based on how velocity moved it
 	setPosition(position);
-
 }
 
-void Tribble::setVelocity(const sf::Vector2f& v)
+void sot::Tribble::setVelocity(const sf::Vector2f& v)
 {
     velocity = v;
 }

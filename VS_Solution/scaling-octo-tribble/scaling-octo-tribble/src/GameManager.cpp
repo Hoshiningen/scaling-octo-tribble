@@ -11,7 +11,7 @@ namespace {
     static const int INIT_HEIGHT = 800;
 }
 
-GameManager::GameManager()
+sot::GameManager::GameManager()
     : window(sf::VideoMode(INIT_WIDTH, INIT_HEIGHT), "Tribbles!"),
       player(std::make_unique<Player>(sf::Vector2f(INIT_WIDTH / 2.f, INIT_HEIGHT / 2.f)))
 {
@@ -31,13 +31,13 @@ GameManager::GameManager()
     addTribble();
 }
 
-GameManager& GameManager::getSingleton()
+sot::GameManager& sot::GameManager::getSingleton()
 {
     static GameManager instance{};
     return instance;
 }
 
-void GameManager::gameLoop()
+void sot::GameManager::gameLoop()
 {
 	while (window.isOpen())
 	{
@@ -50,11 +50,10 @@ void GameManager::gameLoop()
 
 		tick();
 		draw(window);
-
 	}
 }
 
-void GameManager::tick()
+void sot::GameManager::tick()
 {
 	//function encapsulated last frame
 	static auto last_frame = std::chrono::steady_clock::now();
@@ -83,7 +82,7 @@ void GameManager::tick()
 	last_frame = now;
 }
 
-void GameManager::io(float delta_time)
+void sot::GameManager::io(float delta_time)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
 	{
@@ -98,7 +97,7 @@ void GameManager::io(float delta_time)
 	}
 }
 
-void GameManager::addTribble()
+void sot::GameManager::addTribble()
 {
 	static const float scaleFactor = 0.66f;
 
@@ -111,7 +110,7 @@ void GameManager::addTribble()
     tribbles.emplace(std::move(newSprite), *newSprite);
 }
 
-void GameManager::addTribble(float x, float y)
+void sot::GameManager::addTribble(float x, float y)
 {
     static const float scaleFactor = 0.66f;
 
@@ -125,68 +124,58 @@ void GameManager::addTribble(float x, float y)
     tribbles.emplace(std::move(newSprite), *newSprite);
 }
 
-const int GameManager::getWidth() const noexcept
+const int sot::GameManager::getWidth() const noexcept
 {
     return window.getSize().x;
 }
 
-const int GameManager::getHeight() const noexcept
+const int sot::GameManager::getHeight() const noexcept
 {
     return window.getSize().y;
 }
 
-void GameManager::tickAll(float deltaTime)
+void sot::GameManager::tickAll(float deltaTime)
 {
-    std::for_each(std::begin(tribbles), std::end(tribbles),
-        [delta = deltaTime](auto& triblePair)
-        { 
-            triblePair.second.tick(delta);
-        });
+    for (const auto& tribblePair : tribbles)
+        tribblePair.second.tick(deltaTime);
 
     player->tick(deltaTime);
 
 	for (auto& ptr : Projectile::GetActiveProjectiles())
-	{
 		ptr->tick(deltaTime);
-	}
-
-	//Projectile::handleStagedForRemove();
 }
 
-void GameManager::draw(sf::RenderWindow& window)
+void sot::GameManager::draw(sf::RenderWindow& window)
 {
 	window.clear();
 
-	std::for_each(std::begin(tribbles), std::end(tribbles),
-		[win = &window](auto& triblePair)
-	{
-		win->draw(triblePair.second);
-	});
+    for (const auto& tribblePair : tribbles)
+        window.draw(tribblePair.second);
 
 	window.draw(*player);
 
+    sf::Text label;
+    label.setString("Hello, world!");
+    label.setColor(sf::Color::Red);
+    window.draw(label);
+
 	//draw active projectiles
-	
-	const auto& ProjectilesToDraw = Projectile::GetActiveProjectiles();
-	for (auto& projectile : ProjectilesToDraw)
+	for (const auto& projectile : Projectile::GetActiveProjectiles())
 	{
-		if (projectile)
-		{
+		if (projectile != nullptr)
 			window.draw(*projectile);
-		}
 	}
 
-	
 	//buffer swap
 	window.display();
 }
 
-const sf::RenderWindow& GameManager::getWindow() const
+const sf::RenderWindow& sot::GameManager::getWindow() const
 {
 	return window;
 }
 
-sf::Vector2i GameManager::getMousePosition()
+sf::Vector2i sot::GameManager::getMousePosition()
 {
 	return sf::Mouse::getPosition(window);
 }

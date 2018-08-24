@@ -4,6 +4,10 @@
 
 #include <memory>
 
+#include "GameConstants.h"
+
+BEGIN_GAME_NAMESPACE
+
 class TribbleBuilder
 {
 public:
@@ -14,8 +18,10 @@ public:
     TribbleBuilder& setTexture(const sf::Texture& texture);
     TribbleBuilder& setVelocity(const sf::Vector2f& velocity);
 
-    std::unique_ptr<Tribble> create();
+    std::unique_ptr<sot::Tribble> create();
 
 private:
-    std::unique_ptr<Tribble> pTribble{};
+    std::unique_ptr<sot::Tribble> pTribble{};
 };
+
+END_GAME_NAMESPACE

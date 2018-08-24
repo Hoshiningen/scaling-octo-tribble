@@ -2,34 +2,34 @@
 
 #include <memory>
 
-TribbleBuilder::TribbleBuilder()
+sot::TribbleBuilder::TribbleBuilder()
     : pTribble(std::make_unique<Tribble>()) {}
 
-TribbleBuilder& TribbleBuilder::setPosition(const sf::Vector2f& p)
+sot::TribbleBuilder& sot::TribbleBuilder::setPosition(const sf::Vector2f& p)
 {
     pTribble->setPosition(p.x, p.y);
     return *this;
 }
 
-TribbleBuilder& TribbleBuilder::setVelocity(const sf::Vector2f& velocity)
+sot::TribbleBuilder& sot::TribbleBuilder::setVelocity(const sf::Vector2f& velocity)
 {
     pTribble->setVelocity(velocity);
     return *this;
 }
 
-TribbleBuilder& TribbleBuilder::setScale(const sf::Vector2f& s)
+sot::TribbleBuilder& sot::TribbleBuilder::setScale(const sf::Vector2f& s)
 {
     pTribble->setScale(s.x, s.y);
     return *this;
 }
 
-TribbleBuilder& TribbleBuilder::setTexture(const sf::Texture& t)
+sot::TribbleBuilder& sot::TribbleBuilder::setTexture(const sf::Texture& t)
 {
     pTribble->setTexture(t);
     return *this;
 }
 
-std::unique_ptr<Tribble> TribbleBuilder::create()
+std::unique_ptr<sot::Tribble> sot::TribbleBuilder::create()
 {
     auto ret = std::move(pTribble);
     pTribble = std::make_unique<Tribble>();

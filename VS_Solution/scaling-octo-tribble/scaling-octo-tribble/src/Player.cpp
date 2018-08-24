@@ -1,20 +1,27 @@
 #include "Player.h"
+
+#include <numeric>
+
 #include "GameManager.h"
 #include "TextureManager.h"
-#include <numeric>
+#include "Weapon.h"
+
+using namespace std::chrono_literals;
 
 namespace
 {
-	const size_t NUM_PROJECTILES = 2;
+	constexpr size_t NUM_PROJECTILES = 20;
 }
 
-Player::Player(sf::Vector2f o)
-    : origin(o) 
+std::chrono::high_resolution_clock::time_point sot::Player::lastFiredTime = std::chrono::high_resolution_clock::now();
+
+sot::Player::Player(sf::Vector2f o)
+    : origin(o)
 {
 	initializeProjectiles();
 }
 
-void Player::tick(const float deltaTime)
+void sot::Player::tick(const float deltaTime)
 {
     const float distanceThreshold = GameManager::getSingleton().getWidth() / 2.f;
     const float leftBoundary = -distanceThreshold + getOrigin().x;
@@ -36,40 +43,41 @@ void Player::tick(const float deltaTime)
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 	{
 		fireProjectile();
-
 	}
+
+    // Machine gun
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
+    {
+        m_weapon.SetWeaponProperties(WeaponProperties{ 400.f, 100ms });
+    }
+
+    // Sniper
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
+    {
+        m_weapon.SetWeaponProperties(WeaponProperties{ 1000.f, 50ms });
+    }
 }
 
-void Player::fireProjectile()
+void sot::Player::fireProjectile()
 {
-	if (quiver.size() != 0)
+    auto now = std::chrono::high_resolution_clock::now();
+
+	if (!quiver.empty() && (now - lastFiredTime) >= m_weapon.GetProperties().GetFireDelay())
 	{
-		auto projectile = quiver.top();
-		sf::Vector2f currentPos = getPosition();
+        m_weapon.FireWeapon(getPosition(), quiver);
 
-		projectile->setPosition(currentPos);
-		sf::Vector2i mousePosition = GameManager::getSingleton().getMousePosition();
-		sf::Vector2f mousePosFloat = { static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y) };
-		sf::Vector2f newDirection = mousePosFloat - currentPos;
-
-		// Normalize vector and multiple by speed
-		float magnitude = std::sqrt(newDirection.x * newDirection.x + newDirection.y * newDirection.y);
-		newDirection /= magnitude; 
-
-		projectile->setDirection(newDirection);
-		projectile->activate(quiver);
-		quiver.pop();
+        // Update the timer to start the firing cool down
+        lastFiredTime = std::chrono::high_resolution_clock::now();
 	}
 }
 
-void Player::initializeProjectiles()
+void sot::Player::initializeProjectiles()
 {
 	TextureManager& textManager = TextureManager::getSingleton();
 	const sf::Texture& projectileTexture = textManager.getTexture(TextureID::PROJECTILE);
 
 	for (int i = 0; i < NUM_PROJECTILES; ++i)
 	{
-		//projectiles.emplace_back();
 		auto projectile = std::make_shared<Projectile>();
 
 		projectile->setTexture(projectileTexture);
@@ -78,9 +86,6 @@ void Player::initializeProjectiles()
 		//delete below, for testing
 		projectile->setPosition(400, 400);
 
-		projectile->setSpeed(400.0f);
-
 		quiver.emplace(projectile);
 	}
-
 }

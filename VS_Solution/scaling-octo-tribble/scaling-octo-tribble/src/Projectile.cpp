@@ -1,18 +1,20 @@
 #include "Projectile.h"
+
 #include <iostream>
 #include <stack>
 #include <memory>
+
 #include "GameManager.h"
 
-std::set<std::shared_ptr<Projectile> > Projectile::activeProjectiles;
+std::set<std::shared_ptr<sot::Projectile>> sot::Projectile::activeProjectiles{};
 
-void Projectile::setDirection(const sf::Vector2f&normalizedDirection) noexcept
+void sot::Projectile::setDirection(const sf::Vector2f& normalizedDirection) noexcept
 {
     velocity = normalizedDirection;
 	velocity *= speed;
 }
 
-void Projectile::tick(const float deltaTime)
+void sot::Projectile::tick(const float deltaTime)
 {
     //get position
     sf::Vector2f position = getPosition();
@@ -38,7 +40,7 @@ void Projectile::tick(const float deltaTime)
 	}
 }
 
-void Projectile::activate(std::stack<std::shared_ptr<Projectile> >& containerForDeactivation) //TODO make sure safe since player may be deleted before this
+void sot::Projectile::activate(std::stack<std::shared_ptr<Projectile> >& containerForDeactivation) //TODO make sure safe since player may be deleted before this
 {
 	bIsActive = true;
 	
@@ -47,13 +49,13 @@ void Projectile::activate(std::stack<std::shared_ptr<Projectile> >& containerFor
 	this->deactivationContainer = &containerForDeactivation;
 }
 
-const std::set<std::shared_ptr<Projectile> > Projectile::GetActiveProjectiles()
+const std::set<std::shared_ptr<sot::Projectile>> sot::Projectile::GetActiveProjectiles()
 {
 	//this intentionally makes a copy to prevent removal while iterating.
 	return activeProjectiles;
 }
 
-void Projectile::setSpeed(float newSpeed)
+void sot::Projectile::setSpeed(float newSpeed)
 {
 	speed = newSpeed;
 }

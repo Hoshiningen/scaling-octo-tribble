@@ -2,7 +2,7 @@
 
 int main()
 {
-    GameManager& manager = GameManager::getSingleton();
+    sot::GameManager& manager = sot::GameManager::getSingleton();
 	manager.gameLoop();
 
 	return 0;

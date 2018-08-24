@@ -7,10 +7,14 @@
 
 #include "Player.h"
 #include "Tribble.h"
+#include "GameConstants.h"
+
+BEGIN_GAME_NAMESPACE
 
 class GameManager final 
 {
 public:
+
     static GameManager& getSingleton();
 	~GameManager() = default;
 
@@ -20,7 +24,6 @@ public:
 	void draw(sf::RenderWindow& window);
 
 	void addTribble();
-
     void addTribble(float x, float y);
 
     const int getWidth() const noexcept;
@@ -55,17 +58,12 @@ public:
     */
 
 private:
+
     void tick();
     void tickAll(float deltaTime);
     void io(float delta_time);
 
     GameManager();
-
-    //deleted functions
-    GameManager(const GameManager& copy) = delete;
-    GameManager(GameManager&& move) = delete;
-    GameManager& operator=(const GameManager& copy) = delete;
-    GameManager& operator=(GameManager&& move) = delete;
 	
 private:
     using TribbleMap = std::map<std::unique_ptr<Tribble>, Tribble&>;
@@ -77,3 +75,4 @@ private:
     std::unique_ptr<Player> player;
 };
 
+END_GAME_NAMESPACE

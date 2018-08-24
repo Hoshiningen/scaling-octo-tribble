@@ -1,32 +1,38 @@
 #pragma once
+
 #include <set>
-#include <SFML/Graphics.hpp>
 #include <map>
 #include <stack>
 #include <memory>
 #include <chrono>
 
+#include <SFML/Graphics.hpp>
+
+#include "GameConstants.h"
+
+BEGIN_GAME_NAMESPACE
+
 class Projectile : public sf::Sprite, public std::enable_shared_from_this<Projectile>
 {
-private: //private statics
-	static std::set<std::shared_ptr<Projectile> >  activeProjectiles;
-
 public:
+	static const std::set<std::shared_ptr<Projectile>> GetActiveProjectiles();
+
     Projectile() = default;
 	Projectile(int x) {}
+
     virtual ~Projectile() = default;
 
-    //Projectile(const Projectile&) = delete;
-    //Projectile& operator=(const Projectile&) = delete;
+    Projectile(const Projectile&) = delete;
+    Projectile& operator=(const Projectile&) = delete;
 
     void setDirection(const sf::Vector2f&normalizedDirection) noexcept;
     void tick(const float deltaTime);
 	void activate(std::stack<std::shared_ptr<Projectile> >& containerForDeactivation);
-
-	static const std::set<std::shared_ptr<Projectile> > GetActiveProjectiles();
-
 	void setSpeed(float newSpeed);
-private:
+
+private: //private statics
+	static std::set<std::shared_ptr<Projectile> >  activeProjectiles;
+
 	float speed;
     sf::Vector2f velocity{};
 	bool bIsActive;
@@ -35,3 +41,4 @@ private:
 	
 };
 
+END_GAME_NAMESPACE

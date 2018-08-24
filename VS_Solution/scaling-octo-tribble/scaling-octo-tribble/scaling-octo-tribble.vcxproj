@@ -130,6 +130,7 @@
     <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\Tribble.cpp" />
     <ClCompile Include="src\TribbleBuilder.cpp" />
+    <ClCompile Include="src\Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Projectile.h" />
@@ -139,6 +140,7 @@
     <ClInclude Include="src\TextureManager.h" />
     <ClInclude Include="src\Tribble.h" />
     <ClInclude Include="src\TribbleBuilder.h" />
+    <ClInclude Include="src\Weapon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
